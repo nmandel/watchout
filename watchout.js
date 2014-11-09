@@ -1,7 +1,4 @@
-// start slingin' some d3 here.
-
 //Global Variables
-
 var boardWidth = parseInt(d3.select('body').select('svg').style("width"));
 var boardHeight = parseInt(d3.select('body').select('svg').style("height"));
 var numEnemies = 25;
@@ -12,6 +9,7 @@ var highScore = 0;
 var speed = 3000;
 var collided;
 var rotateEnemy = 0;
+var bonus = true;
 
 // Scoreboard
 var incrementCollisions = function(){
@@ -34,7 +32,7 @@ setInterval(function(){
   d3.select('.current').select('span').text(score);
 }, 100);
 
-// Collision Handling
+// Collision and Bonus Handling
 var collide = function(enemy) {
   var enemies = d3.selectAll('.enemy');
   for (var i = 0; i < enemies[0].length; i++) {
@@ -44,9 +42,11 @@ var collide = function(enemy) {
     var yDiff = Math.abs(parseInt(player.attr("y")) - 5 - parseInt(enemy.attr("y")));
     var bothRadiuses = parseInt(player.attr("r")) + parseInt(enemy.attr("r"));
     var distance = Math.sqrt(Math.pow(xDiff, 2) + Math.pow(yDiff, 2));
-    // console.log(player.attr("cx") + " " + player.attr("cy"));
-    // console.log(player.attr("cx") + " "  + enemy.cx + " " + xDiff);
-    // console.log(distance);
+    if (!collided && bonus && parseInt(player.attr("x")) > 380 && parseInt(player.attr("x")) < 420 && parseInt(player.attr("y")) > 280 && parseInt(player.attr("y")) < 320){
+      score+=50;
+      d3.selectAll('.bonus').remove();
+      bonus = false;
+    }
     if (distance <= bothRadiuses && !collided) {
       collided = true;
       incrementCollisions();
@@ -59,8 +59,8 @@ var collide = function(enemy) {
 var dragmove = function(){
   collide();
   d3.select('.player')
-    .attr("x", d3.event.x)
-    .attr("y", d3.event.y);
+    .attr("x", d3.event.x - 25)
+    .attr("y", d3.event.y - 25);
 };
 
 var drag = d3.behavior.drag()
@@ -72,12 +72,9 @@ d3.select('body').select('svg').append("image")
   .attr("y", boardHeight/2)
   .attr("r", 25)
   .attr("class", "player")
-  // .append("svg:image")
   .attr("height", "50px")
   .attr("width", "50px")
-  // .style("fill", "transparent")
   .attr("xlink:href", "images/koala.png")
-  // .style("fill", "url(images/koala.png)")
   .call(drag);
 
 
@@ -133,12 +130,18 @@ var repeat = function() {
 
 repeat();
 
+//Check collisions
 setInterval(collide, 100);
 
-// function collisionChecker () {
-//   d3.selectAll(".enemy")
-//     .each(function(d) {
-//       // console.log(d);
-//       collide(d);
-//     });
-// };
+
+// Create Bonus Eucalyptus
+setInterval(function(){
+  bonus = true;
+  d3.select('body').select('svg').append('image')
+  .attr("xlink:href", "images/eucalyptus.png")
+  .attr("x", "400")
+  .attr("y", "300")
+  .attr("height", "45px")
+  .attr("width", "45px")
+  .attr("class", "bonus");
+}, 7000)
