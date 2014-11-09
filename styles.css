@@ -4,5 +4,20 @@
 Feel free to use it if you like. */
 
 .enemy {
-  content: url(asteroid.png);
+  fill: url(images/boomerang.png);
+}
+
+.player {
+  fill: url(images/koala.png);
+}
+@-moz-keyframes spin { 100% { -moz-transform: rotate(360deg); } }
+@-webkit-keyframes spin { 100% { -webkit-transform: rotate(360deg); } }
+@keyframes spin { 100% { -webkit-transform: rotate(360deg); transform:rotate(360deg); } }
+
+body {
+  background-image: url(images/outback.jpg);
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
 }
